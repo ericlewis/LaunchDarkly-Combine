@@ -2,7 +2,34 @@
 
 An easy to use [LaunchDarkly](https://launchdarkly.com) framework that adds support for Combine. Supports iOS 13+, macOS 10.15+, watchOS 6+, tvOS 13+.
 
-# Example
+## Requirements
+
+| Platform | Version |
+| -------- | ------- |
+| iOS      | 13.0    |
+| watchOS  | 6.0     |
+| tvOS     | 13.0    |
+| macOS    | 10.15   |
+
+## Installation
+
+Current support is only for SPM, feel free to open a PR to add other package managers.
+
+### Swift Package Manager
+
+The [Swift Package Manager](https://swift.org/package-manager/) is a dependency manager integrated into the `swift` compiler and Xcode.
+
+To integrate LaunchDarkly+Combine into an Xcode project, go to the project editor, and select `Swift Packages`. From here hit the `+` button and follow the prompts using  `https://github.com/ericlewis/LaunchDarkly-Combine.git` as the URL.
+
+To include LaunchDarkly+Combine in a Swift package, simply add it to the dependencies section of your `Package.swift` file. And add the product "LaunchDarkly+Combine" as a dependency for your targets.
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/ericlewis/LaunchDarkly-Combine.git", .upToNextMinor(from: "1.0.0"))
+]
+```
+
+## Example
 ```swift
 import Combine
 import LaunchDarkly_Combine
@@ -17,12 +44,12 @@ cancellable = LDClient.get()!.variationPublisher(forKey: key)
     }
 ```
 
-# Project Structure
+## Project Structure
 
-## Extensions
+### Extensions
 - Contains the code for extending `LDClient` with Combine.
 
-# License
+## License
 Copyright (c) 2020 Eric Lewis
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
