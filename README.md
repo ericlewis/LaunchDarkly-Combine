@@ -1,5 +1,7 @@
 # LaunchDarkly+Combine
 
+[![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-informational)](#swift-package-manager)
+
 An easy to use [LaunchDarkly](https://launchdarkly.com) framework that adds support for Combine. Supports iOS 13+, macOS 10.15+, watchOS 6+, tvOS 13+.
 
 ## Requirements
