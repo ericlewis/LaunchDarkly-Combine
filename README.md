@@ -5,7 +5,7 @@ An easy to use [LaunchDarkly](https://launchdarkly.com) framework that adds supp
 # Example
 ```swift
 import Combine
-import Launchly
+import LaunchDarkly_Combine
 import LaunchDarkly
 
 LDClient.start(config: LDConfig(mobileKey: "#YOUR_MOBILE_KEY#"))
