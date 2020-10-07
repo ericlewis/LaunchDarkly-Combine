@@ -1,4 +1,4 @@
-# Launchly
+# LaunchDarkly+Combine
 
 An easy to use [LaunchDarkly](https://launchdarkly.com) framework that adds support for Combine. Supports iOS 13+, macOS 10.15+, watchOS 6+, tvOS 13+.
 
