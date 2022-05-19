@@ -9,13 +9,13 @@ import Combine
 import LaunchDarkly
 
 extension LDClient {
-    public func variationPublisher<T: LDFlagValueConvertible>(forKey: LDFlagKey) -> LDClient.VariationPublisher<T> {
+    public func variationPublisher<T: Codable>(forKey: LDFlagKey) -> LDClient.VariationPublisher<T> {
         VariationPublisher(forKey, client: self)
     }
 }
 
 extension LDClient {
-    public struct VariationPublisher<T: LDFlagValueConvertible>: Combine.Publisher {
+    public struct VariationPublisher<T: Codable>: Combine.Publisher {
         public typealias Output = T
         public typealias Failure = Never
         
@@ -33,7 +33,7 @@ extension LDClient {
         }
     }
     
-    fileprivate final class VariationSubscription<SubscriberType: Subscriber>: Combine.Subscription where SubscriberType.Input: LDFlagValueConvertible, SubscriberType.Failure == Never {
+    fileprivate final class VariationSubscription<SubscriberType: Subscriber>: Combine.Subscription where SubscriberType.Input: Codable, SubscriberType.Failure == Never {
         private let subscriber: SubscriberType
         private let client: LDClient
         private let key: LDFlagKey
@@ -50,7 +50,8 @@ extension LDClient {
         
         func request(_ demand: Subscribers.Demand) {
             if demand > 0 {
-                _ = subscriber.receive(client.variation(forKey: key)!)
+                let value: Codable = client.jsonVariation(forKey: key, defaultValue: LDValue.null)
+                _ = subscriber.receive(value as! SubscriberType.Input)
             }
         }
         
