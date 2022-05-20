@@ -27,7 +27,7 @@ To include LaunchDarkly+Combine in a Swift package, simply add it to the depende
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/ericlewis/LaunchDarkly-Combine.git", .upToNextMinor(from: "1.0.0"))
+    .package(url: "https://github.com/ericlewis/LaunchDarkly-Combine.git", .upToNextMinor(from: "2.0.0"))
 ]
 ```
 
@@ -37,10 +37,22 @@ import Combine
 import LaunchDarkly_Combine
 import LaunchDarkly
 
+func observeFlag<T: Decodable>(key: LDFlagKey) -> AnyPublisher<T, Error> {
+    LDClient.get()!
+        .variationPublisher(forKey: key)
+        .decode()
+        .eraseToAnyPublisher()
+}
+
+func observeMyBoolFlag() -> AnyPublisher<Bool, Never> {
+   return observeFlag(key: "#FLAG_KEY")
+            .replaceError(with: false) // Default value
+}
+
 LDClient.start(config: LDConfig(mobileKey: "#YOUR_MOBILE_KEY#"))
 
 var cancellable: AnyCancellable?
-cancellable = LDClient.get()!.variationPublisher(forKey: key)
+cancellable = observeMyBoolFlag()
     .sink {
         print($0)
     }
