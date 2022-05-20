@@ -63,3 +63,15 @@ extension LDClient {
         
     }
 }
+
+public extension Publisher where Output == LDValue {
+    
+    func decode<T: Decodable>(
+            as type: T.Type = T.self,
+            using decoder: JSONDecoder = .init()
+        ) -> AnyPublisher<T, Error> {
+            encode(encoder: JSONEncoder())
+            .decode(type: type, decoder: decoder)
+            .eraseToAnyPublisher()
+        }
+}
