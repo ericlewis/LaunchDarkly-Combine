@@ -38,8 +38,6 @@ extension LDClient {
         private let subscriber: SubscriberType
         private let client: LDClient
         private let key: LDFlagKey
-        private let encoder = JSONEncoder()
-        private let decoder = JSONDecoder()
         
         init(subscriber: SubscriberType, key: LDFlagKey, client: LDClient) {
             self.subscriber = subscriber
