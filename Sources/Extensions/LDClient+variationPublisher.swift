@@ -7,6 +7,7 @@
 
 import Combine
 import LaunchDarkly
+import Foundation
 
 extension LDClient {
     public func variationPublisher<T: Codable>(forKey: LDFlagKey) -> LDClient.VariationPublisher<T> {
@@ -37,6 +38,8 @@ extension LDClient {
         private let subscriber: SubscriberType
         private let client: LDClient
         private let key: LDFlagKey
+        private let encoder = JSONEncoder()
+        private let decoder = JSONDecoder()
         
         init(subscriber: SubscriberType, key: LDFlagKey, client: LDClient) {
             self.subscriber = subscriber
@@ -44,19 +47,25 @@ extension LDClient {
             self.client = client
             
             client.observe(key: key, owner: self as LDObserverOwner) { [weak self] in
-                _ = self?.subscriber.receive($0.newValue as! SubscriberType.Input)
+                guard let self = self else { return }
+                _ = self.subscriber.receive(self._cast($0.newValue))
             }
         }
         
         func request(_ demand: Subscribers.Demand) {
             if demand > 0 {
-                let value: Codable = client.jsonVariation(forKey: key, defaultValue: LDValue.null)
-                _ = subscriber.receive(value as! SubscriberType.Input)
+                let value: LDValue = client.jsonVariation(forKey: key, defaultValue: LDValue.null)
+                _ = subscriber.receive(_cast(value))
             }
         }
         
         func cancel() {
             client.stopObserving(owner: self as LDObserverOwner)
+        }
+        
+        private func _cast(_ value: LDValue) -> SubscriberType.Input {
+            let data = try! encoder.encode(value)
+            return try! decoder.decode(SubscriberType.Input.self, from: data)
         }
     }
 }
