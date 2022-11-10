@@ -17,7 +17,7 @@ let package = Package(
             targets: ["LaunchDarkly+Combine"]),
     ],
     dependencies: [
-        .package(name: "LaunchDarkly", url: "https://github.com/launchdarkly/ios-client-sdk.git", .upToNextMajor(from: Version(6, 1, 0)))
+        .package(name: "LaunchDarkly", url: "https://github.com/launchdarkly/ios-client-sdk.git", .upToNextMajor(from: Version(7, 1, 0)))
     ],
     targets: [
         .target(
