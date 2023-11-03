@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/launchdarkly/ios-client-sdk.git",
         "state": {
           "branch": null,
-          "revision": "8ceaa14005dc5879f1b67029010353d378366e02",
-          "version": "7.1.0"
+          "revision": "0fedd1964fef9e3145526dfb9d13a079f588fbfb",
+          "version": "9.2.1"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/LaunchDarkly/swift-eventsource.git",
         "state": {
           "branch": null,
-          "revision": "aa03131eb30bbc35513153609ed65209853603a7",
-          "version": "3.0.0"
+          "revision": "3d45eacab476f9bb2c58662cfb2d35088140b25b",
+          "version": "3.1.1"
         }
       }
     ]
