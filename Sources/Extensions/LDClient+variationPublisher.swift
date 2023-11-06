@@ -7,16 +7,17 @@
 
 import Combine
 import LaunchDarkly
+import Foundation
 
 extension LDClient {
-    public func variationPublisher<T: LDFlagValueConvertible>(forKey: LDFlagKey) -> LDClient.VariationPublisher<T> {
+    public func variationPublisher(forKey: LDFlagKey) -> LDClient.VariationPublisher {
         VariationPublisher(forKey, client: self)
     }
 }
 
 extension LDClient {
-    public struct VariationPublisher<T: LDFlagValueConvertible>: Combine.Publisher {
-        public typealias Output = T
+    public struct VariationPublisher: Combine.Publisher {
+        public typealias Output = LDValue
         public typealias Failure = Never
         
         private let key: LDFlagKey
@@ -33,7 +34,7 @@ extension LDClient {
         }
     }
     
-    fileprivate final class VariationSubscription<SubscriberType: Subscriber>: Combine.Subscription where SubscriberType.Input: LDFlagValueConvertible, SubscriberType.Failure == Never {
+    fileprivate final class VariationSubscription<SubscriberType: Subscriber>: Combine.Subscription where SubscriberType.Input: Codable, SubscriberType.Failure == Never {
         private let subscriber: SubscriberType
         private let client: LDClient
         private let key: LDFlagKey
@@ -44,18 +45,33 @@ extension LDClient {
             self.client = client
             
             client.observe(key: key, owner: self as LDObserverOwner) { [weak self] in
-                _ = self?.subscriber.receive($0.newValue as! SubscriberType.Input)
+                guard let self = self else { return }
+                _ = self.subscriber.receive($0.newValue as! SubscriberType.Input)
             }
         }
         
         func request(_ demand: Subscribers.Demand) {
             if demand > 0 {
-                _ = subscriber.receive(client.variation(forKey: key)!)
+                let value: LDValue = client.jsonVariation(forKey: key, defaultValue: LDValue.null)
+                _ = subscriber.receive(value as! SubscriberType.Input)
             }
         }
         
         func cancel() {
             client.stopObserving(owner: self as LDObserverOwner)
         }
+        
     }
+}
+
+public extension Publisher where Output == LDValue {
+    
+    func decode<T: Decodable>(
+            as type: T.Type = T.self,
+            using decoder: JSONDecoder = .init()
+        ) -> AnyPublisher<T, Error> {
+            encode(encoder: JSONEncoder())
+            .decode(type: type, decoder: decoder)
+            .eraseToAnyPublisher()
+        }
 }
